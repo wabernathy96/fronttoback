@@ -9,6 +9,10 @@ const passport = require("passport");
 // Load User Model
 const User = require("../../models/User");
 
+// Load Input Validation
+const validateRegisterInput = require("../validation/register");
+const validateLoginInput = require("../validation/login");
+
 // @route       GET api/users/tests
 // @desc        Tests users route
 // @access      Public
@@ -18,12 +22,19 @@ router.get("/test", (req, res) => res.json({ msg: "USERS ROUTE ONLINE" }));
 // @desc        Register users
 // @access      Public
 router.post("/register", (req, res) => {
+  const { errors, isValid } = validateRegisterInput(req.body);
+
+  if (!isValid) {
+    return res.status(400).json(errors);
+  }
+
   // Get body of request from post then email
   User.findOne({ email: req.body.email }).then(user => {
     // If the email exists
     if (user) {
+      errors.email = "Hey, that email is already in use.";
       // Send error
-      return res.status(400).json({ email: "Email already being used" });
+      return res.status(400).json(errors);
     } else {
       // Get the gravatar avatar associated with the email
       const avatar = gravatar.url(req.body.email, {
@@ -63,6 +74,12 @@ router.post("/register", (req, res) => {
 // @desc        Login user && Return JSON Web Token (JWT)
 // @access      Public
 router.post("/login", (req, res) => {
+  const { errors, isValid } = validateLoginInput(req.body);
+
+  if (!isValid) {
+    return res.status(400).json(errors);
+  }
+
   const email = req.body.email;
   const password = req.body.password;
 
@@ -70,7 +87,8 @@ router.post("/login", (req, res) => {
     .then(user => {
       // Check for user
       if (!user) {
-        return res.status(404).json({ email: "User not found" });
+        errors.email = "User not found.. Double check your email";
+        return res.status(404).json({ errors });
       }
 
       // Check Password - compare password from above w password in db
