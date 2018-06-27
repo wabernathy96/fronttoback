@@ -98,7 +98,7 @@ const ProfileSchema = new Schema({
       }
     }
   ],
-  Social: {
+  social: {
     linkedin: {
       type: String
     },
