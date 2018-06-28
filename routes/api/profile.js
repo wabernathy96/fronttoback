@@ -8,6 +8,8 @@ const Profile = require("../../models/Profile");
 const User = require("../../models/User");
 // Validation
 const validateProfileInput = require("../validation/profile");
+const validateExperienceInput = require("../validation/experience");
+const validateEducationInput = require("../validation/education");
 
 // @route       GET api/profile/tests
 // @desc        Tests profile route
@@ -24,6 +26,7 @@ router.get(
     const errors = {};
 
     Profile.findOne({ user: req.secure.id })
+      .populate("user", ["name", "avatar"])
       .then(profile => {
         if (profile) {
           res.json(profile);
@@ -32,9 +35,84 @@ router.get(
           return res.status(404).json(errors);
         }
       })
-      .catch(error => res.status(404).json(error));
+      .catch(err =>
+        res
+          .status(404)
+          .json({ profile: "No profile exists for that user, sorry, dude." })
+      );
   }
 );
+
+// @route       GET api/profile/handle/:handle
+// @desc        Get profile by handle
+// @access      Public
+router.get("/handle/:handle", (req, res) => {
+  const errors = {};
+  // Match :handle from url to handle from db
+  Profile.findOne({ handle: req.params.handle })
+    .populate("user", ["name", "avatar"])
+    .then(profile => {
+      if (!profile) {
+        errors.noProfile = "No profile exists for that handle, sorry, dude.";
+        res.status(404).json(errors);
+      }
+
+      res.json(profile);
+    })
+    .catch(err =>
+      res
+        .status(404)
+        .json({ profile: "No profile exists for that handle, sorry, dude." })
+    );
+});
+
+// @route       GET api/profile/user/:user_id
+// @desc        Get profile by id
+// @access      Public
+router.get("/user/:user_id", (req, res) => {
+  const errors = {};
+
+  // Match :user_id from url to user_id from db
+  Profile.findOne({ user: req.params.user_id })
+    .populate("user", ["name", "avatar"])
+    .then(profile => {
+      if (!profile) {
+        errors.noProfile = "No profile exists for that user, sorry, dude.";
+        res.status(404).json(errors);
+      }
+
+      res.json(profile);
+    })
+    .catch(err =>
+      res
+        .status(404)
+        .json({ profile: "No profile exists for that user, sorry, dude." })
+    );
+});
+
+// @route       GET api/profile/all
+// @desc        Get all profiles
+// @access      Public
+router.get("/all", (req, res) => {
+  const errors = {};
+
+  // Find all profiles
+  Profile.find({})
+    .populate("user", ["name", "avatar"])
+    .then(profiles => {
+      if (!profiles) {
+        errors.noProfile = "Sorry, dude, no profiles currently exist";
+        return res.status(404).json(errors);
+      }
+
+      res.json(profiles);
+    })
+    .catch(err =>
+      res
+        .status(404)
+        .json({ profiles: "Sorry, dude, no profiles currently exist" })
+    );
+});
 
 // @route       POST api/profile
 // @desc        Create/Edit user profile
@@ -107,6 +185,90 @@ router.post(
         });
       }
     });
+  }
+);
+
+// @route       POST api/profile/experience
+// @desc        Add experience to profile
+// @access      Private
+
+router.post(
+  "/experience",
+  passport.authenticate("jwt", { session: false }),
+  (req, res) => {
+    Profile.findOne({ user: req.user.id })
+      .then(profile => {
+        const { errors, isValid } = validateExperienceInput(req.body);
+
+        // Check validation
+        if (!isValid) {
+          // Return errors with 400 status
+          return res.status(400).json(errors);
+        }
+
+        profile.experience = [];
+
+        const newExperience = {
+          title: req.body.title,
+          company: req.body.company,
+          location: req.body.location,
+          from: req.body.from,
+          to: req.body.to,
+          current: req.body.current,
+          description: req.body.description
+        };
+
+        // Add newExperience to experience arr
+        // unshift = add to beginning
+        profile.experience.unshift(newExperience);
+
+        profile.save().then(profile => res.json(profile));
+      })
+      .catch(err =>
+        res.status(400).json({ experience: "The experience post failed :-(" })
+      );
+  }
+);
+
+// @route       POST api/profile/education
+// @desc        Add education to profile
+// @access      Private
+
+router.post(
+  "/education",
+  passport.authenticate("jwt", { session: false }),
+  (req, res) => {
+    Profile.findOne({ user: req.user.id })
+      .then(profile => {
+        const { errors, isValid } = validateEducationInput(req.body);
+
+        // Check validation
+        if (!isValid) {
+          // Return errors with 400 status
+          return res.status(400).json(errors);
+        }
+
+        profile.education = [];
+
+        const newEducation = {
+          school: req.body.school,
+          degree: req.body.company,
+          fieldofstudy: req.body.location,
+          from: req.body.from,
+          to: req.body.to,
+          current: req.body.current,
+          description: req.body.description
+        };
+
+        // Add newEducation to education arr
+        // unshift = add to beginning
+        profile.education.unshift(newEducation);
+
+        profile.save().then(profile => res.json(profile));
+      })
+      .catch(err =>
+        res.status(400).json({ education: "The education post failed :-(" })
+      );
   }
 );
 
