@@ -272,4 +272,10 @@ router.post(
   }
 );
 
+// @route       DELETE api/profile/experience
+// @desc        Delete experience from profile
+// @access      Private
+
+router.post("");
+
 module.exports = router;

@@ -25,7 +25,7 @@ require("./config/passport")(passport);
 // Connect to MongoDB
 mongoose
   .connect(db)
-  .then(() => console.log("🦔 MongoDB Connected 🦔"))
+  .then(() => console.log("MONGODB CONNECTED "))
   .catch(err => console.log(err));
 
 // Routing
@@ -36,4 +36,4 @@ app.use("/api/profile", profile);
 app.use("/api/posts", posts);
 
 // Start Server
-app.listen(PORT, () => console.log(`🧟‍ ITS ALIIIVE ON PORT ${PORT} 🧟‍`));
+app.listen(PORT, () => console.log(`SERVER RUNNING ON PORT: ${PORT} 🧟`));
