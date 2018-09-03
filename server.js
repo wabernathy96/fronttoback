@@ -2,9 +2,9 @@ const express = require("express");
 const mongoose = require("mongoose");
 const passport = require("passport");
 
-// Routes
+// Route Files
 const users = require("./routes/api/users");
-const profile = require("./routes/api/profile");
+const profiles = require("./routes/api/profiles");
 const posts = require("./routes/api/posts");
 
 // Server config
@@ -25,15 +25,15 @@ require("./config/passport")(passport);
 // Connect to MongoDB
 mongoose
   .connect(db)
-  .then(() => console.log("MONGODB CONNECTED "))
+  .then(() => console.log("MONGODB CONNECTED"))
   .catch(err => console.log(err));
 
 // Routing
-app.get("/", (req, res) => res.send("hello!"));
+app.get("/", (req, res) => res.send("Hello World!"));
 
 app.use("/api/users", users);
-app.use("/api/profile", profile);
+app.use("/api/profile", profiles);
 app.use("/api/posts", posts);
 
 // Start Server
-app.listen(PORT, () => console.log(`SERVER RUNNING ON PORT: ${PORT} 🧟`));
+app.listen(PORT, () => console.log(`SERVER RUNNING ON PORT: ${PORT}`));
