@@ -9,7 +9,7 @@ const Post = require("../../models/Post");
 const Profile = require("../../models/Profile")
 
 // Post Validation
-const validatePostInput = require('../validation/post');
+const validatePostInput = require("../validation/post");
 
 // @route       GET api/posts/tests
 // @desc        Tests posts route
@@ -19,7 +19,7 @@ router.get("/test", (req, res) => res.json({ msg: "POSTS ROUTE ONLINE" }));
 // @route       GET api/posts
 // @desc        Get all posts
 // @access      Public
-router.get('/',
+router.get("/",
   (req, res) => {
     Post.find()
       .sort({ date: -1 })
@@ -31,7 +31,7 @@ router.get('/',
 // @route       GET api/posts/:id
 // @desc        Get one post
 // @access      Public
-router.get('/:id',
+router.get("/:id",
   (req, res) => {
     Post.findById(req.params.id)
       .then(post => res.json(post))
@@ -70,7 +70,7 @@ router.post("/",
 // @desc        Delete post
 // @access      Private
 router.delete("/:id",
-  passport.authenticate('jwt', { session: false }),
+  passport.authenticate("jwt", { session: false }),
   (req, res) => {
     Profile.findOne({ user: req.user.id })
       .then(
@@ -102,7 +102,7 @@ router.delete("/:id",
 // @desc        Like post
 // @access      Private
 router.post("/like/:id",
-  passport.authenticate('jwt', { session: false }),
+  passport.authenticate("jwt", { session: false }),
   (req, res) => {
     Profile.findOne({ user: req.user.id })
       .then(
@@ -110,7 +110,7 @@ router.post("/like/:id",
           Post.findById(req.params.id)
             .then(
               post => {
-                // If the like obj within the likes arr has a users' id, throw err
+                // If the like obj within the likes arr has a users" id, throw err
                 if (post.likes.filter(like => like.user.toString() === req.user.id).length > 0) {
                   return res.status(400).json({ previousLike: "User has already liked this post." })
                 }
@@ -136,7 +136,7 @@ router.post("/like/:id",
 // @desc        Unlike post
 // @access      Private
 router.post("/unlike/:id",
-  passport.authenticate('jwt', { session: false }),
+  passport.authenticate("jwt", { session: false }),
   (req, res) => {
     Profile.findOne({ user: req.user.id })
       .then(
@@ -144,7 +144,7 @@ router.post("/unlike/:id",
           Post.findById(req.params.id)
             .then(
               post => {
-                // If the like obj within the likes arr has a users' id, throw err
+                // If the like obj within the likes arr has a users" id, throw err
                 if (post.likes.filter(like => like.user.toString() === req.user.id).length === 0) {
                   return res.status(400).json({ notLiked: "User has not yet liked the post." })
                 }

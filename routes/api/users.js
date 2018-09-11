@@ -87,8 +87,8 @@ router.post("/login", (req, res) => {
     .then(user => {
       // Check for user
       if (!user) {
-        errors.email = "User not found.. Double check your email";
-        return res.status(404).json({ errors });
+        errors.email = "User not found";
+        return res.status(404).json(errors);
       }
 
       // Check Password - compare password from above w password in db
