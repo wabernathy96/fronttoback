@@ -6,9 +6,10 @@ import InputGroup from "../common/InputGroup";
 import SelectListGroup from "../common/SelectListGroup";
 import TextFieldGroup from "../common/TextFieldGroup";
 import TextAreaFieldGroup from "../common/TextAreaFieldGroup";
-import { createProfile } from "../../actions/profileActions";
+import { createProfile, getCurrentProfile } from "../../actions/profileActions";
+import isEmpty from "../../utils/isEmpty";
 
-class CreateProfile extends Component {
+class EditProfile extends Component {
   constructor(props) {
     super(props);
 
@@ -34,6 +35,10 @@ class CreateProfile extends Component {
     this.onSubmit = this.onSubmit.bind(this);
   };
 
+  componentDidMount(props) {
+    this.props.getCurrentProfile();
+  }
+
   componentWillReceiveProps(nextProps) {
     if (nextProps.errors) {
       this.setState(
@@ -41,6 +46,43 @@ class CreateProfile extends Component {
           errors: nextProps.errors
         }
       )
+    }
+
+    if (nextProps.profile.profile) {
+      const profile = nextProps.profile.profile;
+
+      // Bring skills array to CSV
+      const skillsCSV = profile.skills.join(", ")
+
+      // If profile field doesnt exist, make empty string
+      profile.company = !isEmpty(profile.company) ? profile.company : "";
+      profile.website = !isEmpty(profile.website) ? profile.website : "";
+      profile.location = !isEmpty(profile.location) ? profile.location : "";
+      profile.githubusername = !isEmpty(profile.githubusername) ? profile.githubusername : "";
+      profile.bio = !isEmpty(profile.bio) ? profile.bio : "";
+      profile.social = !isEmpty(profile.social) ? profile.social : {};
+      profile.twitter = !isEmpty(profile.social.twitter) ? profile.social.twitter : "";
+      profile.facebook = !isEmpty(profile.social.facebook) ? profile.social.facebook : "";
+      profile.linkedin = !isEmpty(profile.social.linkedin) ? profile.social.linkedin : "";
+      profile.youtube = !isEmpty(profile.social.youtube) ? profile.social.youtube : "";
+      profile.instagram = !isEmpty(profile.social.instagram) ? profile.social.instagram : "";
+
+      // Set component fields state
+      this.setState({
+        handle: profile.handle,
+        company: profile.company,
+        website: profile.website,
+        location: profile.location,
+        status: profile.status,
+        skills: skillsCSV,
+        githubusername: profile.githubusername,
+        bio: profile.bio,
+        twitter: profile.twitter,
+        facebook: profile.facebook,
+        linkedin: profile.linkedin,
+        youtube: profile.youtube,
+        instagram: profile.instagram
+      })
     }
   }
 
@@ -139,11 +181,8 @@ class CreateProfile extends Component {
           <div className="row">
             <div className="col-md-8 m-auto">
               <h1 className="display-4 text-center">
-                Create Your Profile
+                Edit Your Profile
               </h1>
-              <p className="lead text-center">
-                Add information to make your profile stand out
-              </p>
               <small className="d-block pb-3 ">
                 * = required fields
               </small>
@@ -187,7 +226,7 @@ class CreateProfile extends Component {
                   value={this.state.location}
                   onChange={this.onChange}
                   error={errors.location}
-                  info="The city you reside in or work at - City, State preferred (e.g. Houston, TX)"
+                  info="The city you reside in or work at"
                 />
                 <TextFieldGroup
                   placeholder="* Skills"
@@ -240,17 +279,18 @@ class CreateProfile extends Component {
   };
 };
 
-CreateProfile.propTypes = {
+EditProfile.propTypes = {
   createProfile: PropTypes.func.isRequired,
+  getCurrentProfile: PropTypes.func.isRequired,
   profile: PropTypes.object.isRequired,
   errors: PropTypes.object.isRequired
-}
+};
 
 const mapStatetoProps = state => (
   {
     profile: state.profile,
     errors: state.errors
   }
-)
+);
 
-export default connect(mapStatetoProps, { createProfile })(withRouter(CreateProfile));
+export default connect(mapStatetoProps, { createProfile, getCurrentProfile })(withRouter(EditProfile));
