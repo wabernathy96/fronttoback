@@ -1,6 +1,6 @@
 import React from "react";
 import classnames from "classnames";
-import propTypes from "prop-types";
+import PropTypes from "prop-types";
 
 const TextFieldGroup = (
   {
@@ -32,11 +32,7 @@ const TextFieldGroup = (
         disabled={disabled}
       />
       {info && <small className="form-text text-muted">{info}</small>}
-      {errors.email &&
-        (<div className="invalid-feedback">
-          {errors.email}
-        </div>)
-      }
+      {error && <div className="invalid-feedback">{error}</div>}
     </div>
   );
 };
