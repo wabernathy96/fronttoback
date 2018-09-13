@@ -30,33 +30,33 @@ module.exports = function validateProfileInput(data) {
   // If the respective url fields arent empty
   // Validate the posted url
   if (!isEmpty(data.website)) {
-    if (!Validator.isURL(data.website)) {
-      errors.website = "Invalid URL";
+    if (!Validator.isURL(data.website) || !data.website.includes("http")) {
+      errors.website = "Invalid URL, be sure to include http//";
     }
   }
   if (!isEmpty(data.linkedin)) {
-    if (!Validator.isURL(data.linkedin)) {
-      errors.linkedin = "Invalid URL";
+    if (!Validator.isURL(data.linkedin) || !data.linkedin.includes("http")) {
+      errors.linkedin = "Invalid URL, be sure to include http//";
     }
   }
   if (!isEmpty(data.facebook)) {
-    if (!Validator.isURL(data.facebook)) {
-      errors.facebook = "Invalid URL";
+    if (!Validator.isURL(data.facebook) || !data.facebook.includes("http")) {
+      errors.facebook = "Invalid URL, be sure to include http//";
     }
   }
   if (!isEmpty(data.twitter)) {
-    if (!Validator.isURL(data.twitter)) {
-      errors.twitter = "Invalid URL";
+    if (!Validator.isURL(data.twitter) || !data.twitter.includes("http")) {
+      errors.twitter = "Invalid URL, be sure to include http//";
     }
   }
   if (!isEmpty(data.instagram)) {
-    if (!Validator.isURL(data.instagram)) {
-      errors.instagram = "Invalid URL";
+    if (!Validator.isURL(data.instagram) || !data.instagram.includes("http")) {
+      errors.instagram = "Invalid URL, be sure to include http//";
     }
   }
   if (!isEmpty(data.youtube)) {
-    if (!Validator.isURL(data.youtube)) {
-      errors.youtube = "Invalid URL";
+    if (!Validator.isURL(data.youtube) || !data.youtube.includes("http")) {
+      errors.youtube = "Invalid URL, be sure to include http//";
     }
   }
 
