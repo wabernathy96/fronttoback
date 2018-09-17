@@ -204,8 +204,6 @@ router.post(
           return res.status(400).json(errors);
         }
 
-        profile.experience = [];
-
         const newExperience = {
           title: req.body.title,
           company: req.body.company,
@@ -245,8 +243,6 @@ router.post(
           // Return errors with 400 status
           return res.status(400).json(errors);
         }
-
-        profile.education = [];
 
         const newEducation = {
           school: req.body.school,
