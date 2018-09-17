@@ -30,8 +30,6 @@ mongoose
   .catch(err => console.log(err));
 
 // Routing
-app.get("/", (req, res) => res.send("Hello World!"));
-
 app.use("/api/users", users);
 app.use("/api/profile", profiles);
 app.use("/api/posts", posts);
